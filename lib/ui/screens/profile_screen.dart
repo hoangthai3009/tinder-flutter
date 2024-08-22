@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder/bloc/authentication/authentication_bloc.dart';
 import 'package:tinder/bloc/user/user_bloc.dart';
-import 'package:tinder/shared/component.dart';
+import 'package:tinder/utils/box_decoration.dart';
+import 'package:tinder/utils/ui_helpers.dart';
+import 'package:tinder/ui/widgets/gallery_image.dart';
 import 'package:tinder/ui/screens/profile_details_screen.dart';
+import 'package:tinder/ui/widgets/profile_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -73,7 +76,7 @@ class ProfileScreen extends StatelessWidget {
   Container _buildProfileInfo(BuildContext context, UserLoaded state) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      decoration: _boxDecoration(),
+      decoration: boxDecoration(),
       child: Stack(
         children: [
           Column(
@@ -93,12 +96,12 @@ class ProfileScreen extends StatelessWidget {
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
               ),
               const SizedBox(height: 16),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _ProfileStat(title: 'Attention', value: '130'),
-                  _ProfileStat(title: 'Followers', value: '10M'),
-                  _ProfileStat(title: 'Following', value: '26'),
+                  profileStat(title: 'Attention', value: '130'),
+                  profileStat(title: 'Followers', value: '10M'),
+                  profileStat(title: 'Following', value: '26'),
                 ],
               ),
             ],
@@ -125,7 +128,7 @@ class ProfileScreen extends StatelessWidget {
   Container _buildPicturesSection(BuildContext context, UserLoaded state) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      decoration: _boxDecoration(),
+      decoration: boxDecoration(),
       child: Column(
         children: [
           Text(
@@ -138,7 +141,7 @@ class ProfileScreen extends StatelessWidget {
             runSpacing: 10.0,
             children: state.user.profile.picture.take(3).map((url) {
               int idx = state.user.profile.picture.indexOf(url);
-              return idx == 2 && state.user.profile.picture.length > 3 ? _buildExtraPictures(context, state) : _GalleryImage(url: url);
+              return idx == 2 && state.user.profile.picture.length > 3 ? _buildExtraPictures(context, state) : galleryImage(url: url);
             }).toList(),
           ),
         ],
@@ -146,20 +149,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  BoxDecoration _boxDecoration() {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(20.0),
-      boxShadow: const [
-        BoxShadow(color: Colors.black12, blurRadius: 10.0, spreadRadius: 2.0),
-      ],
-    );
-  }
-
   Stack _buildExtraPictures(BuildContext context, UserLoaded state) {
     return Stack(
       children: [
-        _GalleryImage(url: state.user.profile.picture[2]),
+        galleryImage(url: state.user.profile.picture[2]),
         Positioned.fill(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(15.0),
@@ -196,54 +189,11 @@ class ProfileScreen extends StatelessWidget {
               alignment: WrapAlignment.spaceEvenly,
               spacing: 10.0,
               runSpacing: 10.0,
-              children: state.user.profile.picture.map((url) => _GalleryImage(url: url)).toList(),
+              children: state.user.profile.picture.map((url) => galleryImage(url: url)).toList(),
             ),
           ),
         );
       },
-    );
-  }
-}
-
-class _ProfileStat extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const _ProfileStat({required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, color: Colors.grey),
-        ),
-      ],
-    );
-  }
-}
-
-class _GalleryImage extends StatelessWidget {
-  final String url;
-
-  const _GalleryImage({required this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(15.0),
-      child: Image.network(
-        url,
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      ),
     );
   }
 }

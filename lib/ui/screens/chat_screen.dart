@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder/bloc/chat/chat_bloc.dart';
 import 'package:tinder/bloc/user/user_bloc.dart';
-import 'package:tinder/shared/component.dart';
+import 'package:tinder/utils/ui_helpers.dart';
 
 class ChatScreen extends StatefulWidget {
   final String matchId;
@@ -129,7 +129,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           ),
                           Padding(
                             padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom + 10.0, // Add padding here
+                              bottom: MediaQuery.of(context).viewInsets.bottom + 10.0,
                               left: 8.0,
                               right: 8.0,
                               top: 8.0,

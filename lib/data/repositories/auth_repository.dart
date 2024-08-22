@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tinder/shared/constants.dart';
+import 'package:tinder/utils/constants.dart';
 
 class AuthRepository {
   Future<void> login(String email, String password) async {

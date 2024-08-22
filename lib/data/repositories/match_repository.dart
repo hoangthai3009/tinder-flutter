@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinder/data/models/match.dart';
 import 'package:tinder/data/models/user/user.dart';
-import 'package:tinder/shared/constants.dart';
+import 'package:tinder/utils/constants.dart';
 
 class MatchRepository {
   Future<List<Match>> getMatches() async {

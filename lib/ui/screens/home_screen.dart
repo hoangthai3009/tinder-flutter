@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tinder/shared/login_form.dart';
-import 'package:tinder/shared/register_form.dart';
+import 'package:tinder/ui/screens/login_form.dart';
+import 'package:tinder/ui/screens/register_form.dart';
 import 'package:tinder/ui/widgets/gradient_background.dart';
 
 class HomeScreen extends StatelessWidget {

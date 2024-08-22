@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tinder/bloc/matched_list/matched_list_bloc.dart';
-import 'package:tinder/shared/component.dart';
+import 'package:tinder/utils/ui_helpers.dart';
 import 'package:tinder/ui/screens/chat_screen.dart';
 
 class MatchedList extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tinder/shared/dialog.dart';
+import 'package:tinder/ui/widgets/dialogs/session_expired_dialog.dart';
 
 void showSessionExpiredDialog(BuildContext context) {
   showDialog(

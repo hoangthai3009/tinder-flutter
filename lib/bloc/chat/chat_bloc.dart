@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:tinder/data/models/chat.dart';
 import 'package:tinder/data/repositories/chat_repository.dart';
-import 'package:tinder/shared/constants.dart';
+import 'package:tinder/utils/constants.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';

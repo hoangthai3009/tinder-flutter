@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:tinder/bloc/matching/matching_bloc.dart';
 import 'package:tinder/data/models/user/user.dart';
-import 'package:tinder/shared/component.dart';
+import 'package:tinder/utils/ui_helpers.dart';
 import 'package:tinder/ui/widgets/match_card.dart';
 
 class MatchingScreen extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinder/data/models/user/user.dart';
-import 'package:tinder/shared/constants.dart';
+import 'package:tinder/utils/constants.dart';
 
 class UserRepository {
   Future<User> getUserProfile() async {

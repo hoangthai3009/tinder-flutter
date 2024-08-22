@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinder/data/models/user/user.dart';
+import 'package:tinder/utils/date_utils.dart';
 
 class MatchCard extends StatefulWidget {
   final User user;
@@ -90,7 +91,7 @@ class _MatchCardState extends State<MatchCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        '${widget.user.name}, ${widget.user.profile.age}',
+                        '${widget.user.name}, ${calculateAge(widget.user.profile.dateOfBirth)}',
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24.0,

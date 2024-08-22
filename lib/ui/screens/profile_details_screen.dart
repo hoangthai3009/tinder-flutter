@@ -18,13 +18,11 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   late String _name;
   late String _email;
   late String _bio;
-  late int _age;
+  late DateTime _dateOfBirth;
   late String _gender;
   late List<String> _interests;
   late String _avatar;
   late List<String> _pictures;
-  late bool _topPicksEnabled;
-  late bool _verified;
 
   @override
   void initState() {
@@ -35,17 +33,18 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   void _updateProfile(User user) {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
       final updatedUser = User(
         id: user.id,
         name: _name,
         email: _email,
-        verified: _verified,
+        verified: user.verified,
         newUser: user.newUser,
         createdAt: user.createdAt,
         updatedAt: DateTime.now(),
         profile: UserProfile(
           bio: _bio,
-          age: _age,
+          dateOfBirth: _dateOfBirth,
           gender: _gender,
           interests: _interests,
           avatar: _avatar,
@@ -55,10 +54,11 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
         superLikes: user.superLikes,
         boosts: user.boosts,
         topPicks: TopPicks(
-          enabled: _topPicksEnabled,
-          lastUpdated: DateTime.now(),
+          enabled: user.topPicks.enabled,
+          lastUpdated: user.topPicks.lastUpdated,
         ),
       );
+
       BlocProvider.of<UserBloc>(context).add(UpdateUserEvent(user: updatedUser));
     }
   }
@@ -67,7 +67,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Profile'),
+        title: const Text('Thông tin chi tiết'),
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
@@ -85,17 +85,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
           if (state is UserLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is UserLoaded) {
-            final user = state.user;
-            _name = user.name;
-            _email = user.email;
-            _bio = user.profile.bio;
-            _age = user.profile.age;
-            _gender = user.profile.gender;
-            _interests = List.from(user.profile.interests);
-            _avatar = user.profile.avatar;
-            _pictures = List.from(user.profile.picture);
-            _topPicksEnabled = user.topPicks.enabled;
-            _verified = user.verified;
+            _initializeFields(state.user);
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -119,21 +109,18 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                       initialValue: _bio,
                       onSaved: (value) => _bio = value!,
                     ),
-                    _buildTextField(
-                      label: 'Age',
-                      initialValue: _age.toString(),
-                      onSaved: (value) => _age = int.parse(value!),
-                      keyboardType: TextInputType.number,
+                    _buildDateField(
+                      label: 'Date of Birth',
+                      initialValue: _dateOfBirth,
+                      onSaved: (value) => _dateOfBirth = value!,
                     ),
                     _buildDropdownField(
                       label: 'Gender',
                       value: _gender,
                       items: ['male', 'female', 'other'],
-                      onChanged: (newValue) {
-                        setState(() {
-                          _gender = newValue!;
-                        });
-                      },
+                      onChanged: (newValue) => setState(() {
+                        _gender = newValue!;
+                      }),
                       onSaved: (value) => _gender = value!,
                     ),
                     _buildTextField(
@@ -141,33 +128,24 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                       initialValue: _interests.join(', '),
                       onSaved: (value) => _interests = value!.split(', ').toList(),
                     ),
-                    _buildTextField(
-                      label: 'Avatar URL',
-                      initialValue: _avatar,
-                      onSaved: (value) => _avatar = value!,
-                    ),
-                    _buildTextField(
-                      label: 'Pictures URLs',
-                      initialValue: _pictures.join(', '),
-                      onSaved: (value) => _pictures = value!.split(', ').toList(),
-                    ),
-                    _buildSwitchTextField(
-                      title: 'Top Picks Enabled',
-                      value: _topPicksEnabled,
-                      onChanged: (value) {
+                    _buildImagePicker(
+                      label: 'Avatar',
+                      imageUrl: _avatar,
+                      onImageSelected: (path) {
                         setState(() {
-                          _topPicksEnabled = value;
+                          _avatar = path;
                         });
                       },
                     ),
-                    _buildSwitchTextField(
-                      title: 'Verified',
-                      value: _verified,
-                      onChanged: (value) {
+                    _buildImagePicker(
+                      label: 'Pictures',
+                      imageUrl: _pictures.isNotEmpty ? _pictures[0] : '',
+                      onImageSelected: (path) {
                         setState(() {
-                          _verified = value;
+                          _pictures.add(path);
                         });
                       },
+                      multiple: true,
                     ),
                   ],
                 ),
@@ -179,6 +157,54 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
             return const Center(child: Text('Unexpected state'));
           }
         },
+      ),
+    );
+  }
+
+  void _initializeFields(User user) {
+    _name = user.name;
+    _email = user.email;
+    _bio = user.profile.bio;
+    _dateOfBirth = user.profile.dateOfBirth;
+    _gender = user.profile.gender;
+    _interests = List.from(user.profile.interests);
+    _avatar = user.profile.avatar;
+    _pictures = List.from(user.profile.picture);
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: _dateOfBirth,
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null && selectedDate != _dateOfBirth) {
+      setState(() {
+        _dateOfBirth = selectedDate;
+      });
+    }
+  }
+
+  Widget _buildDateField({
+    required String label,
+    required DateTime initialValue,
+    required void Function(DateTime?) onSaved,
+  }) {
+    return GestureDetector(
+      onTap: () => _selectDate(context),
+      child: AbsorbPointer(
+        child: TextFormField(
+          decoration: InputDecoration(
+            labelText: label,
+            hintText: initialValue.toLocal().toString().split(' ')[0],
+            suffixIcon: const Icon(Icons.calendar_today),
+          ),
+          initialValue: initialValue.toLocal().toString().split(' ')[0],
+          onSaved: (value) => onSaved(DateTime.parse(value!)),
+          keyboardType: TextInputType.none,
+        ),
       ),
     );
   }
@@ -236,17 +262,39 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
     );
   }
 
-  Widget _buildSwitchTextField({
-    required String title,
-    required bool value,
-    required ValueChanged<bool> onChanged,
+  Widget _buildImagePicker({
+    required String label,
+    required String imageUrl,
+    required ValueChanged<String> onImageSelected,
+    bool multiple = false,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: SwitchListTile(
-        title: Text(title),
-        value: value,
-        onChanged: onChanged,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8.0),
+          if (imageUrl.isNotEmpty)
+            Image.network(
+              imageUrl,
+              height: 100.0,
+              width: 100.0,
+              fit: BoxFit.cover,
+            )
+          else
+            const Text('No image selected'),
+          ElevatedButton(
+            onPressed: () async {
+              String path = 'path/to/selected/image';
+              onImageSelected(path);
+            },
+            child: Text(multiple ? 'Add Pictures' : 'Select Image'),
+          ),
+        ],
       ),
     );
   }

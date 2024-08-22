@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tinder/data/models/chat.dart';
-import 'package:tinder/shared/constants.dart';
+import 'package:tinder/utils/constants.dart';
 
 class ChatRepository {
   Future<List<Message>> fetchMessages(String matchId) async {

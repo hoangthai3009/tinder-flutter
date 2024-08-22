@@ -2,7 +2,7 @@ import 'package:tinder/data/models/user/location.dart';
 
 class UserProfile {
   final String bio;
-  final int age;
+  final DateTime dateOfBirth;
   final String gender;
   final List<String> interests;
   final String avatar;
@@ -11,7 +11,7 @@ class UserProfile {
 
   UserProfile({
     required this.bio,
-    required this.age,
+    required this.dateOfBirth,
     required this.gender,
     required this.interests,
     required this.avatar,
@@ -22,7 +22,7 @@ class UserProfile {
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       bio: json['bio'],
-      age: json['age'],
+      dateOfBirth: DateTime.parse(json['dateOfBirth']),
       gender: json['gender'],
       interests: List<String>.from(json['interests']),
       avatar: json['avatar'],
@@ -34,7 +34,7 @@ class UserProfile {
   Map<String, dynamic> toJson() {
     return {
       'bio': bio,
-      'age': age,
+      'age': dateOfBirth,
       'gender': gender,
       'interests': interests,
       'avatar': avatar,
